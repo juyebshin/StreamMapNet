@@ -201,6 +201,23 @@ class Renderer(object):
 
             out_path = osp.join(out_dir, self.cam_names[i]) + '.jpg'
             cv2.imwrite(out_path, img_bgr)
+            
+        # surrounding view
+        row_1_list = []
+        for cam in ['CAM_FRONT_LEFT','CAM_FRONT','CAM_FRONT_RIGHT']:
+            cam_img_name = cam + '.jpg'
+            cam_img = cv2.imread(osp.join(out_dir, cam_img_name))
+            row_1_list.append(cam_img)
+        row_2_list = []
+        for cam in ['CAM_BACK_LEFT','CAM_BACK','CAM_BACK_RIGHT']:
+            cam_img_name = cam + '.jpg'
+            cam_img = cv2.imread(osp.join(out_dir, cam_img_name))
+            row_2_list.append(cam_img)
+        row_1_img=cv2.hconcat(row_1_list)
+        row_2_img=cv2.hconcat(row_2_list)
+        cams_img = cv2.vconcat([row_1_img,row_2_img])
+        cams_img_path = osp.join(out_dir, 'surroud_view.jpg')
+        cv2.imwrite(cams_img_path, cams_img,[cv2.IMWRITE_JPEG_QUALITY, 70])
 
     def render_bev_from_mask(self, semantic_mask, out_dir):
         '''Render bev segmentation from semantic_mask.

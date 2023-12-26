@@ -63,11 +63,14 @@ def main():
 
     # ann_file = mmcv.load('datasets/nuScenes/nuscenes_map_infos_val.pkl')
     scene_name2idx = {}
+    scene_ts = []
     for idx, sample in enumerate(dataset.samples):
         scene = sample['scene_name']
+        timestamp = sample['timestamp']
         if scene not in scene_name2idx:
             scene_name2idx[scene] = []
         scene_name2idx[scene].append(idx)
+        scene_ts.append(timestamp)
 
     scene_name = sorted(list(scene_name2idx.keys()))[args.idx]
     print(scene_name)
@@ -75,9 +78,9 @@ def main():
     os.makedirs(scene_dir, exist_ok=True)
     start_idx = scene_name2idx[scene_name][0]
     results = mmcv.load(args.result)
-    for idx in mmcv.track_iter_progress(scene_name2idx[scene_name]):
+    for i, idx in enumerate(mmcv.track_iter_progress(scene_name2idx[scene_name])):
         
-        out_dir = os.path.join(scene_dir, str(idx - start_idx + 1))
+        out_dir = os.path.join(scene_dir, str(scene_ts[i]))
         gt_dir = os.path.join(out_dir, 'gt')
         pred_dir = os.path.join(out_dir, 'pred')
 
