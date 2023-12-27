@@ -77,7 +77,8 @@ def main():
     scene_dir = os.path.join(args.out_dir, scene_name)
     os.makedirs(scene_dir, exist_ok=True)
     start_idx = scene_name2idx[scene_name][0]
-    results = mmcv.load(args.result)
+    if args.result is not None:
+        results = mmcv.load(args.result)
     for i, idx in enumerate(mmcv.track_iter_progress(scene_name2idx[scene_name])):
         
         out_dir = os.path.join(scene_dir, str(scene_ts[i]))
